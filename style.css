@@ -1,0 +1,755 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Основной стиль для всего сайта */
+body {
+    font-family: Arial, sans-serif;
+    background-color: #1b1b1b;
+    color: white;
+    text-align: center;
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+.container {
+    width: 90%;
+    max-width: 1200px;
+    margin: auto;
+    padding: 20px;
+}
+
+/* Адаптивный макет */
+.header {
+    background: #333;
+    color: white;
+    padding: 15px;
+    text-align: center;
+    font-size: 1.5em;
+}
+
+.nav {
+    display: flex;
+    justify-content: space-around;
+    background: #444;
+    padding: 10px 0;
+}
+
+.nav a {
+    color: white;
+    text-decoration: none;
+    padding: 10px 15px;
+}
+
+.nav a:hover {
+    background: #555;
+    border-radius: 5px;
+}
+/* Сетка для контента */
+.main-content {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 20px;
+    margin-top: 20px;
+}
+
+.card {
+    background: #f4f4f4;
+    padding: 15px;
+    border-radius: 10px;
+    box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1);
+    text-align: center;
+}
+
+/* Медиа-запросы для мобильных устройств */
+@media (max-width: 768px) {
+    .nav {
+        flex-direction: column;
+        align-items: center;
+    }
+    .nav a {
+        display: block;
+        width: 100%;
+        text-align: center;
+    }
+}
+/* Контейнер для фона */
+.background-image {
+    width: 100%; /* Ширина блока с фоном на всю страницу */
+    height: 1280px; /* Высота секции, где будет фон */
+    background-image: url('img/wsd.png'); /* Путь к изображению фона */
+    background-size: cover; /* Масштабируем изображение, чтобы оно покрывало блок */
+    background-position: center; /* Центрируем изображение */
+    background-repeat: no-repeat; /* Избегаем повторения изображения */
+    position: absolute; /* Абсолютное позиционирование для размещения вверху */
+    top: 0; /* Расположение вверху страницы */
+    left: 0; /* Расположение слева страницы */
+    z-index: 0; /* Находимся ниже всего остального контента */
+}
+
+.content {
+    padding: 20px;
+    position: relative;
+    z-index: 1; /* Контент поверх фона */
+}
+
+/* Меню */
+header {
+    background-color: #333;
+    position: sticky; /* Прикрепляем к верхней части страницы */
+    top: 0;
+    z-index: 1000;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px;
+}
+
+/* Логотипы */
+.logo {
+    display: flex;
+    align-items: center;
+}
+
+.game-logo {
+    width: 50px;
+    height: 50px;
+    margin-right: 10px;
+}
+
+.main-logo {
+    width: 100px;
+    height: auto;
+}
+
+/* Стили для меню */
+header ul {
+    list-style-type: none;
+    padding: 10px;
+    margin: 0;
+    display: flex;
+    justify-content: center;
+}
+
+header ul li {
+    margin: 0 15px;
+}
+
+header ul li a {
+    text-decoration: none;
+    color: white;
+    font-size: 18px;
+    padding: 10px;
+    transition: background-color 0.3s, transform 0.2s;
+}
+
+header ul li a:hover {
+    background-color: #444;
+    border-radius: 5px;
+    transform: scale(1.05);
+}
+
+/* Выпадающий список для языка */
+.language-dropdown {
+    position: relative;
+}
+
+.language-dropdown .dropdown-btn {
+    background-color: #333;
+    color: white;
+    padding: 10px;
+    border: none;
+    cursor: pointer;
+}
+
+.language-dropdown .dropdown-btn:hover {
+    background-color: #444;
+}
+
+.language-dropdown .dropdown-content {
+    display: none;
+    position: absolute;
+    background-color: #333;
+    min-width: 160px;
+    z-index: 1;
+}
+
+.language-dropdown:hover .dropdown-content {
+    display: block;
+}
+
+.language-dropdown .dropdown-content a {
+    color: white;
+    padding: 10px;
+    text-decoration: none;
+    display: block;
+}
+
+.language-dropdown .dropdown-content a:hover {
+    background-color: #444;
+}
+
+/* Социальные сети */
+.social-media {
+    display: flex;
+    gap: 10px;
+}
+
+.social-icon {
+    color: white;
+    text-decoration: none;
+    font-size: 16px;
+    padding: 5px;
+    transition: background-color 0.3s;
+}
+
+.social-icon:hover {
+    background-color: #444;
+    border-radius: 5px;
+}
+
+/* Модальное окно */
+.modal {
+    display: none; /* Скрыто по умолчанию */
+    position: fixed;
+    z-index: 1001; /* Сделаем окно выше, чем остальные элементы */
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.7); /* Затемняем фон */
+    padding-top: 60px;
+}
+
+/* Контейнер для контента модального окна */
+.modal-content {
+    background-color: #313131;
+    margin: 5% auto;
+    padding: 20px;
+    border: 1px solid #888;
+    width: 80%;
+    z-index: 1002; /* Устанавливаем, чтобы контент был выше фона */
+}
+
+/* Кнопка закрытия */
+.close-btn {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+}
+
+.close-btn:hover,
+.close-btn:focus {
+    color: black;
+    text-decoration: none;
+    cursor: pointer;
+}
+/* Стили для формы */
+form {
+    display: flex;
+    flex-direction: column;
+}
+
+form label {
+    margin: 10px 0 5px;
+}
+
+form input {
+    padding: 10px;
+    margin-bottom: 15px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+form button {
+    padding: 10px;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+form button:hover {
+    background-color: #45a049;
+}
+
+/* Часы */
+
+.clock-section {
+    position: relative;
+    margin: 110px auto; /* Центрируем блок */
+    width: 600px;
+    height: 600px; 
+    z-index: 2; /* Часы над фоном */
+}
+
+.clock {
+    width: 100%;
+    height: 100%;
+    background-image: url('img/sd.png'); /* Добавляем изображение часов */
+    background-size: contain; /* Изображение подстраивается под размер блока */
+    background-repeat: no-repeat;
+    background-position: center;
+    animation: rotateClock 60s linear infinite; /* Анимация для вращения часов */
+}
+
+/* Анимация для вращения */
+@keyframes rotateClock {
+    100% {
+        transform: rotate(360deg); /* Поворачиваем на 360 градусов */
+    }
+}
+
+#countdown-timer {
+    position: relative;
+    top: 287px; /* Расстояние от верхнего края экрана */
+    left: 48%;
+    transform: translateX(-50%); /* Центрирует элемент по горизонтали */
+    z-index: 10; /* Устанавливает слой, чтобы элемент был поверх других */
+    
+    padding: 0px;
+    font-family: monospace;
+    font-size: 7px;
+    color: #fff; /* Цвет текста */
+    border-radius: 5px;
+}
+
+.countdown-digit {
+    display: inline-block;
+    width: 40px;
+    text-align: center;
+    font-size: 40px;
+    background: #000;
+    color: #fff;
+    border-radius: 5px;
+    margin: 2px;
+    position: relative;
+    overflow: hidden;
+}
+
+.countdown-digit::before {
+    content: attr(data-next);
+    position: absolute;
+    top: -100%;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: #000;
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: top 0.5s ease-in-out;
+}
+
+.countdown-digit.animating::before {
+    top: 0;
+}
+
+.countdown-digit.animating {
+    transition: transform 0.5s ease-in-out;
+    transform: translateY(100%);
+}
+
+/* Удаляем текст внутри круга */
+.circle-text {
+    display: none;
+}
+
+.heroes-circle {
+    position: absolute;
+    width: 250px; /* Диаметр окружности увеличен */
+    height: 250px; /* Диаметр окружности увеличен */
+    top: 38%; /* Центрируем по вертикали */
+    left: 35%; /* Центрируем по горизонтали */
+    transform: translate(-50%, -50%); /* Сдвигаем на половину размера, чтобы центрировать */
+}
+
+/* Стили для героев */
+.hero {
+    position: absolute;
+    width: 125px; /* Размер круга увеличен */
+    height: 125px; /* Размер круга увеличен */
+    border-radius: 50%; /* Округлая форма */
+    overflow: hidden; /* Обрезает изображение */
+    cursor: pointer;
+    transition: transform 0.3s ease-in-out;
+}
+
+.hero img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover; /* Обрезка изображения по центру */
+}
+
+.hero:hover {
+    transform: scale(1.1); /* Увеличение при наведении */
+}
+
+.hero:nth-child(1) {
+    top: 5%;
+    left: 5%;
+}
+
+.hero:nth-child(2) {
+    top: 5%;
+    right: 5%;
+}
+
+.hero:nth-child(3) {
+    top: 50%;
+    left: 0%;
+}
+
+.hero:nth-child(4) {
+    top: 50%;
+    right: 0%;
+}
+
+.hero:nth-child(5) {
+    bottom: 5%;
+    left: 5%;
+}
+
+.hero:nth-child(6) {
+    bottom: 5%;
+    right: 5%;
+}
+
+/* Иконки персонажей */
+.hero-img {
+    width: 80%;
+    height: 80%;
+    border-radius: 50%;
+}
+
+/* Заголовки */
+.title {
+    font-size: 36px;
+    font-weight: bold;
+    color: white;
+    margin-bottom: 20px;
+}
+
+.subtitle {
+    font-size: 24px;
+    color: white;
+    margin-bottom: 20px;
+}
+
+
+/* Описание персонажа */
+.description {
+    display: none;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: rgba(51, 51, 51, 0.9); /* Полупрозрачный фон для лучшей читаемости */
+    padding: 20px;
+    border-radius: 10px;
+    z-index: 10;
+}
+
+/* Контейнер для блоков */
+.art-blocks {
+    display: flex;
+    justify-content: center;
+    margin: 30px auto;
+    max-width: 1200px; /* Максимальная ширина контейнера */
+}
+
+/* Блоки с острыми углами (параллелограмм) */
+.art-block {
+    background-color: #222;
+    width: 1200px; /* Увеличиваем ширину блоков */
+    height: 700px; /* Увеличиваем высоту блоков */
+    margin: 0 -15px; /* Увеличиваем отступы между блоками */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    cursor: pointer;
+    transition: transform 0.3s ease, box-shadow 0.3s ease, filter 0.3s ease;
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.5); /* Более интенсивная тень */
+    overflow: hidden;
+    transform: none;
+    border: 5px solid #333; /* Четкая граница блока */
+    clip-path: polygon(15% 0, 100% 0, 85% 100%, 0% 100%); /* Эффект параллелограмма */
+}
+
+/* Эффекты при наведении */
+.art-block:hover {
+    transform: scale(1.05); /* Увеличение блока при наведении */
+    box-shadow: 0 16px 30px rgba(0, 0, 0, 0.8); /* Более интенсивная тень */
+    filter: brightness(1.1); /* Увеличение яркости */
+}
+
+/* Изображение */
+.art-block img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover; /* Чтобы картинка не искажалась */
+    border-radius: 0; /* Убираем скругление углов у картинок */
+    transition: transform 0.3s ease;
+}
+
+/* Увеличение изображения при наведении */
+.art-block:hover img {
+    transform: scale(1.1); /* Увеличиваем изображение при наведении */
+}
+
+/* Для описания при наведении */
+.art-block::after {
+    content: attr(data-title);
+    position: absolute;
+    bottom: 20px;
+    left: 20px;
+    font-size: 20px; /* Увеличиваем размер текста */
+    color: #fff;
+    background: rgba(0, 0, 0, 0.6);
+    padding: 5px 10px;
+    border-radius: 5px;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.art-block:hover::after {
+    opacity: 1;
+}
+
+.trailer-section {
+    text-align: center;
+    margin: 20px;
+}
+
+.trailer-title {
+    text-align: center;
+    margin-bottom: 20px;
+    font-size: 24px;
+    color: white;
+}
+
+.trailer-container {
+    display: flex;
+    align-items: center; /* Выравнивание по вертикали */
+    justify-content: flex-start; /* Размещение слева направо */
+}
+
+.trailer-container video {
+    width: 50%; /* Видео занимает половину ширины */
+    max-width: 800px;
+    height: auto;
+    margin-left: 0; /* Прижимаем к левому краю */
+}
+
+.trailer-text {
+    width: 50%; /* Текст занимает вторую половину */
+    padding-left: 20px;
+    color: white;
+    background: rgba(0, 0, 0, 0.7);
+    padding: 20px;
+    border-radius: 8px;
+    text-align: left;
+}
+
+@media (max-width: 768px) {
+    .trailer-container {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .trailer-container video,
+    .trailer-text {
+        width: 100%;
+    }
+
+    .trailer-text {
+        padding: 10px;
+        text-align: center;
+    }
+}
+
+
+/* Стиль для секции геймплея, озвучки и локализации */
+.requirements-wrapper {
+    display: flex;
+    justify-content: flex-end; /* Выравнивание по правому краю */
+    padding: 20px;
+    width: 100%; /* Убедитесь, что занимает всю ширину родительского элемента */
+}
+
+.localization-wrapper {
+    display: flex;
+    flex-direction: column; /* Вертикальное выравнивание для языков */
+    align-items: flex-start; /* Выравнивание по левому краю */
+    margin: 0; /* Удалите любые внешние отступы */
+    padding: 0; /* Удалите внутренние отступы, если необходимо */
+}
+
+
+/* Блоки требований */
+.requirement-box, .gameplay-box, .localization-box {
+    border: 1px solid #fff;
+    padding: 20px;
+    width: 30%; /* Сделаем блоки уже */
+    border-radius: 5px;
+    background-color: rgba(0, 0, 0, 0.7);
+    color: #fff;
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.5);
+    margin: 0 10px; /* Добавим отступ между блоками */
+}
+
+/* Заголовки блоков */
+.requirement-box h4, .gameplay-box h4, .localization-box h4 {
+    text-align: left;
+    margin-bottom: 10px;
+    font-weight: bold;
+}
+
+/* Стили для списков */
+.requirement-box ul, .localization-box ul {
+    list-style: none;
+    padding: 0;
+}
+
+/* Элементы списков */
+.requirement-box ul li, .localization-box ul li {
+    font-size: 16px;
+    margin-bottom: 10px;
+}
+
+/* Контейнер для локализаций */
+.localization-languages {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-start; /* Выровнять колонки по левому краю */
+}
+
+/* Колонки локализаций */
+.localization-column {
+    width: 32%; /* Три колонки с небольшими отступами */
+    margin-bottom: 10px; /* Отступ между колонками */
+}
+
+/* Для улучшения отображения списка */
+.localization-column li {
+    margin-bottom: 5px; /* Отступ между элементами списка */
+}
+
+/* Выравнивание текста по левому краю */
+.localization-column {
+    text-align: left; /* Выравнивание текста по левому краю */
+}
+
+.container {
+    display: flex; /* Используйте flexbox для расположения элементов в одной линии */
+    justify-content: space-between; /* Разделите пространство между элементами */
+    align-items: flex-start; /* Выравнивание по верхнему краю */
+    width: 100%; /* Убедитесь, что занимает всю ширину */
+}
+
+.voice-subtitles, .subtitles-only {
+    width: 90%; /* Увеличиваем ширину колонок */
+}
+
+.voice-subtitles ul, .subtitles-only ul {
+    list-style: none;
+    padding: 0;
+}
+
+.voice-subtitles ul li, .subtitles-only ul li {
+    font-size: 16px;
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+}
+
+/* Точки для языков */
+.dot {
+    height: 8px;
+    width: 8px;
+    background-color: #fff;
+    border-radius: 50%;
+    display: inline-block;
+    margin-right: 10px;
+}
+
+
+/* Футер */
+footer {
+    background-color: #333;
+    padding: 10px;
+}
+
+footer .social-media {
+    margin: 10px 0;
+}
+
+footer .social-media a {
+    color: white;
+    text-decoration: none;
+    margin: 0 10px;
+}
+
+/* Стили для секции поддержки */
+.support-section {
+    background-color: #2a2a2a;
+    padding: 40px 0;
+    margin: 40px 0;
+    text-align: center;
+}
+
+.support-section h3 {
+    color: #fff;
+    font-size: 24px;
+    margin-bottom: 30px;
+}
+
+.support-logos {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 30px;
+}
+
+.support-logo {
+    max-width: 200px;
+    height: auto;
+    transition: transform 0.3s ease;
+    filter: brightness(0) invert(1); /* Делаем логотип белым */
+}
+
+.support-logo:hover {
+    transform: scale(1.05);
+    filter: brightness(1) invert(0); /* Возвращаем оригинальные цвета при наведении */
+}
+
+.support-logos p {
+    color: #fff;
+    margin-top: 10px;
+    font-size: 16px;
+}
+
+/* Стили для виджета ФАСИ */
+.fasi-widget {
+    margin-top: 40px;
+    padding: 20px;
+    background-color: rgba(255, 255, 255, 0.1);
+    border-radius: 10px;
+}
+
+.fasi-widget h4 {
+    color: #fff;
+    font-size: 20px;
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+.fasi-widget iframe {
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
