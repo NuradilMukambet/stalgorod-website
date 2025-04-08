@@ -147,39 +147,76 @@ setInterval(() => {
     updateCountdown(digits[4], sec2);
 }, 1000);
 
-// Функция для отправки формы регистрации
-async function submitRegistration(event) {
-    event.preventDefault();
-    
+// Улучшенная валидация формы
+function validateForm() {
     const username = document.getElementById('username').value;
     const email = document.getElementById('email').value;
     const password = document.getElementById('password').value;
     const confirmPassword = document.getElementById('confirm-password').value;
+    
+    let isValid = true;
+    const errors = [];
 
-    // Проверка совпадения паролей
-    if (password !== confirmPassword) {
-        alert('Пароли не совпадают!');
-        return;
-    }
-
-    // Проверка минимальной длины пароля
-    if (password.length < 6) {
-        alert('Пароль должен содержать минимум 6 символов');
-        return;
+    // Проверка имени пользователя
+    if (username.length < 3) {
+        errors.push('Имя пользователя должно содержать минимум 3 символа');
+        isValid = false;
     }
 
     // Проверка email
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(email)) {
-        alert('Пожалуйста, введите корректный email');
+        errors.push('Введите корректный email адрес');
+        isValid = false;
+    }
+
+    // Проверка пароля
+    const passwordRegex = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/;
+    if (!passwordRegex.test(password)) {
+        errors.push('Пароль должен содержать минимум 8 символов, включая буквы и цифры');
+        isValid = false;
+    }
+
+    // Проверка совпадения паролей
+    if (password !== confirmPassword) {
+        errors.push('Пароли не совпадают');
+        isValid = false;
+    }
+
+    // Показываем ошибки
+    const errorContainer = document.getElementById('error-container');
+    if (!isValid) {
+        errorContainer.innerHTML = errors.map(error => `<p class="error">${error}</p>`).join('');
+        errorContainer.style.display = 'block';
+    } else {
+        errorContainer.style.display = 'none';
+    }
+
+    return isValid;
+}
+
+// Обновленная функция отправки формы
+async function submitRegistration(event) {
+    event.preventDefault();
+    
+    if (!validateForm()) {
         return;
     }
 
+    const submitButton = event.target.querySelector('button[type="submit"]');
+    const originalText = submitButton.textContent;
+    submitButton.disabled = true;
+    submitButton.textContent = 'Регистрация...';
+
     try {
-        // Создаем пользователя в Firebase Authentication
+        const username = document.getElementById('username').value;
+        const email = document.getElementById('email').value;
+        const password = document.getElementById('password').value;
+
+        // Создаем пользователя в Firebase
         const userCredential = await createUserWithEmailAndPassword(auth, email, password);
         
-        // Сохраняем дополнительную информацию в Firestore
+        // Сохраняем дополнительную информацию
         await addDoc(collection(db, "users"), {
             uid: userCredential.user.uid,
             username: username,
@@ -187,16 +224,128 @@ async function submitRegistration(event) {
             createdAt: new Date()
         });
 
-        alert('Регистрация успешна!');
+        // Показываем сообщение об успехе
+        showNotification('Регистрация успешно завершена!', 'success');
         closeRegistration();
-        // Очищаем форму
         document.getElementById('registration-form').reset();
     } catch (error) {
-        console.error('Error:', error);
+        let errorMessage = 'Произошла ошибка при регистрации';
+        
         if (error.code === 'auth/email-already-in-use') {
-            alert('Пользователь с таким email уже существует');
-        } else {
-            alert('Ошибка при регистрации: ' + error.message);
+            errorMessage = 'Пользователь с таким email уже существует';
         }
+        
+        showNotification(errorMessage, 'error');
+    } finally {
+        submitButton.disabled = false;
+        submitButton.textContent = originalText;
     }
 }
+
+// Функция для показа уведомлений
+function showNotification(message, type) {
+    const notification = document.createElement('div');
+    notification.className = `notification ${type}`;
+    notification.textContent = message;
+    
+    document.body.appendChild(notification);
+    
+    setTimeout(() => {
+        notification.classList.add('show');
+    }, 100);
+    
+    setTimeout(() => {
+        notification.classList.remove('show');
+        setTimeout(() => {
+            notification.remove();
+        }, 300);
+    }, 3000);
+}
+
+// Функция для обновления стрелок часов
+function updateClock() {
+    const now = new Date();
+    const hours = now.getHours() % 12;
+    const minutes = now.getMinutes();
+    const seconds = now.getSeconds();
+
+    // Вычисляем углы для стрелок
+    const hourDegrees = (hours * 30) + (minutes / 2); // 30 градусов в час (360/12)
+    const minuteDegrees = minutes * 6; // 6 градусов в минуту (360/60)
+    const secondDegrees = seconds * 6; // 6 градусов в секунду (360/60)
+
+    // Обновляем положение стрелок
+    document.querySelector('.hour-hand').style.transform = `translateX(-50%) rotate(${hourDegrees}deg)`;
+    document.querySelector('.minute-hand').style.transform = `translateX(-50%) rotate(${minuteDegrees}deg)`;
+    document.querySelector('.second-hand').style.transform = `translateX(-50%) rotate(${secondDegrees}deg)`;
+}
+
+// Обновляем часы каждую секунду
+setInterval(updateClock, 1000);
+// Запускаем часы сразу при загрузке страницы
+updateClock();
+
+// Анимация появления элементов при скролле
+function handleScrollAnimation() {
+    const elements = document.querySelectorAll('.art-block, .content h1, .content p');
+    
+    elements.forEach(element => {
+        const elementTop = element.getBoundingClientRect().top;
+        const elementBottom = element.getBoundingClientRect().bottom;
+        
+        if (elementTop < window.innerHeight && elementBottom > 0) {
+            element.classList.add('visible');
+        }
+    });
+}
+
+// Плавный скролл к секциям
+document.querySelectorAll('header a').forEach(anchor => {
+    anchor.addEventListener('click', function(e) {
+        const href = this.getAttribute('href');
+        if (href !== '#') {
+            e.preventDefault();
+            const target = document.querySelector(href);
+            if (target) {
+                target.scrollIntoView({
+                    behavior: 'smooth',
+                    block: 'start'
+                });
+            }
+        }
+    });
+});
+
+// Динамическая смена языка
+const languageButtons = document.querySelectorAll('.dropdown-content a');
+languageButtons.forEach(button => {
+    button.addEventListener('click', function(e) {
+        e.preventDefault();
+        const language = this.textContent;
+        document.querySelector('.dropdown-btn').textContent = language;
+        // Здесь можно добавить логику смены языка
+    });
+});
+
+// Анимация для героев вокруг часов
+function animateHeroes() {
+    const heroes = document.querySelectorAll('.hero');
+    heroes.forEach((hero, index) => {
+        const angle = (index * (360 / heroes.length)) + performance.now() * 0.02;
+        const radius = 125;
+        const radians = angle * (Math.PI / 180);
+        
+        const top = 50 + (radius * Math.sin(radians));
+        const left = 50 + (radius * Math.cos(radians));
+        
+        hero.style.top = `${top}%`;
+        hero.style.left = `${left}%`;
+    });
+    
+    requestAnimationFrame(animateHeroes);
+}
+
+// Запускаем анимации
+window.addEventListener('scroll', handleScrollAnimation);
+handleScrollAnimation(); // Вызываем один раз при загрузке
+animateHeroes();

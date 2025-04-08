@@ -4,14 +4,13 @@
 
 /* Основной стиль для всего сайта */
 body {
-    font-family: Arial, sans-serif;
-    background-color: #1b1b1b;
-    color: white;
-    text-align: center;
     margin: 0;
     padding: 0;
-    box-sizing: border-box;
+    font-family: 'Roboto', sans-serif;
+    background: #1a1a1a;
+    color: #ffffff;
 }
+
 .container {
     width: 90%;
     max-width: 1200px;
@@ -21,11 +20,14 @@ body {
 
 /* Адаптивный макет */
 .header {
-    background: #333;
-    color: white;
-    padding: 15px;
-    text-align: center;
-    font-size: 1.5em;
+    background: rgba(0, 0, 0, 0.8);
+    backdrop-filter: blur(10px);
+    padding: 1rem;
+    position: fixed;
+    width: 100%;
+    top: 0;
+    z-index: 1000;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
 }
 
 .nav {
@@ -45,6 +47,7 @@ body {
     background: #555;
     border-radius: 5px;
 }
+
 /* Сетка для контента */
 .main-content {
     display: grid;
@@ -73,6 +76,7 @@ body {
         text-align: center;
     }
 }
+
 /* Контейнер для фона */
 .background-image {
     width: 100%; /* Ширина блока с фоном на всю страницу */
@@ -88,22 +92,56 @@ body {
 }
 
 .content {
-    padding: 20px;
-    position: relative;
-    z-index: 1; /* Контент поверх фона */
+    padding: 2rem;
+    max-width: 1200px;
+    margin: 0 auto;
+    text-align: center;
+}
+
+.content h1 {
+    font-size: 3rem;
+    margin-bottom: 1rem;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+}
+
+.content p {
+    font-size: 1.2rem;
+    line-height: 1.6;
+    color: #cccccc;
 }
 
 /* Меню */
-header {
-    background-color: #333;
-    position: sticky; /* Прикрепляем к верхней части страницы */
-    top: 0;
-    z-index: 1000;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.5);
+header ul {
     display: flex;
-    justify-content: space-between;
+    justify-content: center;
     align-items: center;
-    padding: 10px;
+    gap: 2rem;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+header ul li a {
+    color: #ffffff;
+    text-decoration: none;
+    font-size: 1.1rem;
+    transition: color 0.3s ease;
+    position: relative;
+}
+
+header ul li a::after {
+    content: '';
+    position: absolute;
+    width: 0;
+    height: 2px;
+    bottom: -5px;
+    left: 0;
+    background-color: #ff4d4d;
+    transition: width 0.3s ease;
+}
+
+header ul li a:hover::after {
+    width: 100%;
 }
 
 /* Логотипы */
@@ -131,33 +169,6 @@ header {
 }
 
 .main-logo:hover {
-    transform: scale(1.05);
-}
-
-/* Стили для меню */
-header ul {
-    list-style-type: none;
-    padding: 10px;
-    margin: 0;
-    display: flex;
-    justify-content: center;
-}
-
-header ul li {
-    margin: 0 15px;
-}
-
-header ul li a {
-    text-decoration: none;
-    color: white;
-    font-size: 18px;
-    padding: 10px;
-    transition: background-color 0.3s, transform 0.2s;
-}
-
-header ul li a:hover {
-    background-color: #444;
-    border-radius: 5px;
     transform: scale(1.05);
 }
 
@@ -257,6 +268,7 @@ header ul li a:hover {
     text-decoration: none;
     cursor: pointer;
 }
+
 /* Стили для формы */
 form {
     display: flex;
@@ -300,18 +312,48 @@ form button:hover {
 .clock {
     width: 100%;
     height: 100%;
-    background-image: url('img/sd.png'); /* Добавляем изображение часов */
-    background-size: contain; /* Изображение подстраивается под размер блока */
+    background-image: url('img/sd.png');
+    background-size: contain;
     background-repeat: no-repeat;
     background-position: center;
-    animation: rotateClock 60s linear infinite; /* Анимация для вращения часов */
+    position: relative;
 }
 
-/* Анимация для вращения */
+/* Удаляем анимацию вращения часов */
 @keyframes rotateClock {
     100% {
-        transform: rotate(360deg); /* Поворачиваем на 360 градусов */
+        transform: rotate(360deg);
     }
+}
+
+/* Стили для стрелок часов */
+.hour-hand, .minute-hand, .second-hand {
+    position: absolute;
+    bottom: 50%;
+    left: 50%;
+    transform-origin: bottom;
+    border-radius: 4px;
+}
+
+.hour-hand {
+    width: 8px;
+    height: 20%;
+    background: #333;
+    transform: translateX(-50%);
+}
+
+.minute-hand {
+    width: 6px;
+    height: 25%;
+    background: #666;
+    transform: translateX(-50%);
+}
+
+.second-hand {
+    width: 2px;
+    height: 30%;
+    background: #ff0000;
+    transform: translateX(-50%);
 }
 
 #countdown-timer {
@@ -387,7 +429,8 @@ form button:hover {
     border-radius: 50%; /* Округлая форма */
     overflow: hidden; /* Обрезает изображение */
     cursor: pointer;
-    transition: transform 0.3s ease-in-out;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
 }
 
 .hero img {
@@ -398,6 +441,7 @@ form button:hover {
 
 .hero:hover {
     transform: scale(1.1); /* Увеличение при наведении */
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.5);
 }
 
 .hero:nth-child(1) {
@@ -467,50 +511,35 @@ form button:hover {
 
 /* Контейнер для блоков */
 .art-blocks {
-    display: flex;
-    justify-content: center;
-    margin: 30px auto;
-    max-width: 1200px; /* Максимальная ширина контейнера */
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 2rem;
+    padding: 2rem;
 }
 
 /* Блоки с острыми углами (параллелограмм) */
 .art-block {
-    background-color: #222;
-    width: 1200px; /* Увеличиваем ширину блоков */
-    height: 700px; /* Увеличиваем высоту блоков */
-    margin: 0 -15px; /* Увеличиваем отступы между блоками */
-    display: flex;
-    align-items: center;
-    justify-content: center;
     position: relative;
-    cursor: pointer;
-    transition: transform 0.3s ease, box-shadow 0.3s ease, filter 0.3s ease;
-    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.5); /* Более интенсивная тень */
     overflow: hidden;
-    transform: none;
-    border: 5px solid #333; /* Четкая граница блока */
-    clip-path: polygon(15% 0, 100% 0, 85% 100%, 0% 100%); /* Эффект параллелограмма */
+    border-radius: 10px;
+    transition: transform 0.3s ease;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
 }
 
-/* Эффекты при наведении */
 .art-block:hover {
-    transform: scale(1.05); /* Увеличение блока при наведении */
-    box-shadow: 0 16px 30px rgba(0, 0, 0, 0.8); /* Более интенсивная тень */
-    filter: brightness(1.1); /* Увеличение яркости */
+    transform: translateY(-10px);
 }
 
 /* Изображение */
 .art-block img {
     width: 100%;
     height: 100%;
-    object-fit: cover; /* Чтобы картинка не искажалась */
-    border-radius: 0; /* Убираем скругление углов у картинок */
+    object-fit: cover;
     transition: transform 0.3s ease;
 }
 
-/* Увеличение изображения при наведении */
 .art-block:hover img {
-    transform: scale(1.1); /* Увеличиваем изображение при наведении */
+    transform: scale(1.1);
 }
 
 /* Для описания при наведении */
@@ -762,4 +791,201 @@ footer .social-media a {
 .fasi-widget iframe {
     border-radius: 8px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+/* Анимации появления элементов */
+.art-block, .content h1, .content p {
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 0.6s ease, transform 0.6s ease;
+}
+
+.art-block.visible, .content h1.visible, .content p.visible {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* Улучшенные эффекты для героев */
+.hero {
+    position: absolute;
+    width: 125px;
+    height: 125px;
+    border-radius: 50%;
+    overflow: hidden;
+    cursor: pointer;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+}
+
+.hero:hover {
+    transform: scale(1.1);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.5);
+}
+
+.hero img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.3s ease;
+}
+
+.hero:hover img {
+    transform: scale(1.1);
+}
+
+/* Улучшенные стили для модального окна */
+.modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.8);
+    backdrop-filter: blur(5px);
+    z-index: 1000;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.modal.active {
+    opacity: 1;
+}
+
+.modal-content {
+    background: #222;
+    padding: 2rem;
+    border-radius: 10px;
+    max-width: 500px;
+    margin: 2rem auto;
+    position: relative;
+    transform: translateY(-20px);
+    transition: transform 0.3s ease;
+}
+
+.modal.active .modal-content {
+    transform: translateY(0);
+}
+
+/* Улучшенные стили для кнопок */
+button {
+    background: #ff4d4d;
+    color: white;
+    border: none;
+    padding: 0.8rem 1.5rem;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background 0.3s ease, transform 0.2s ease;
+}
+
+button:hover {
+    background: #ff3333;
+    transform: translateY(-2px);
+}
+
+button:active {
+    transform: translateY(0);
+}
+
+/* Стили для уведомлений */
+.notification {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    padding: 15px 25px;
+    border-radius: 5px;
+    color: white;
+    font-weight: 500;
+    opacity: 0;
+    transform: translateX(100%);
+    transition: all 0.3s ease;
+    z-index: 2000;
+}
+
+.notification.show {
+    opacity: 1;
+    transform: translateX(0);
+}
+
+.notification.success {
+    background: #4CAF50;
+}
+
+.notification.error {
+    background: #f44336;
+}
+
+/* Улучшенные стили для формы регистрации */
+#registration-form {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+#registration-form .form-group {
+    position: relative;
+}
+
+#registration-form input {
+    width: 100%;
+    padding: 12px;
+    border: 2px solid #444;
+    border-radius: 5px;
+    background: #333;
+    color: white;
+    font-size: 1rem;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+#registration-form input:focus {
+    outline: none;
+    border-color: #ff4d4d;
+    box-shadow: 0 0 0 3px rgba(255, 77, 77, 0.2);
+}
+
+#registration-form label {
+    position: absolute;
+    left: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #888;
+    transition: all 0.3s ease;
+    pointer-events: none;
+    font-size: 1rem;
+}
+
+#registration-form input:focus + label,
+#registration-form input:not(:placeholder-shown) + label {
+    top: 0;
+    transform: translateY(-100%) scale(0.8);
+    color: #ff4d4d;
+}
+
+#error-container {
+    display: none;
+    background: rgba(244, 67, 54, 0.1);
+    border-left: 4px solid #f44336;
+    padding: 1rem;
+    margin-bottom: 1rem;
+    border-radius: 0 5px 5px 0;
+}
+
+#error-container .error {
+    color: #f44336;
+    margin: 5px 0;
+    font-size: 0.9rem;
+}
+
+/* Анимация загрузки для кнопки */
+@keyframes buttonLoading {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+}
+
+button:disabled {
+    background: linear-gradient(90deg, #ff4d4d, #ff8080, #ff4d4d);
+    background-size: 200% 100%;
+    animation: buttonLoading 2s ease infinite;
+    cursor: not-allowed;
 }
