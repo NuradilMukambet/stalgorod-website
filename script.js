@@ -2,6 +2,22 @@ import { auth, db } from './firebase.js';
 import { createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
 import { collection, addDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
+// Конфигурация Firebase
+const firebaseConfig = {
+    // Здесь должны быть ваши реальные данные конфигурации Firebase
+    apiKey: "YOUR_API_KEY",
+    authDomain: "YOUR_AUTH_DOMAIN",
+    projectId: "YOUR_PROJECT_ID",
+    storageBucket: "YOUR_STORAGE_BUCKET",
+    messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
+    appId: "YOUR_APP_ID"
+};
+
+// Инициализация Firebase
+if (!firebase.apps.length) {
+    firebase.initializeApp(firebaseConfig);
+}
+
 const heroes = [
     'Описание героя 1',
     'Описание героя 2',
@@ -17,137 +33,111 @@ const heroes = [
     'Описание героя 12'
 ];
 
-const heroesCircle = document.getElementById('heroes-circle');
-
-// Получаем элементы для модального окна
-const registrationModal = document.getElementById('registration-modal');
-const openRegistrationBtn = document.querySelector('.open-registration');
-const closeRegistrationBtn = document.querySelector('.close-btn');
-
-// Функция для открытия модального окна
-openRegistrationBtn.addEventListener('click', function(event) {
-    event.preventDefault(); // Предотвращаем переход по ссылке
-    registrationModal.style.display = 'flex'; // Показываем окно
+// Обработчик мобильного меню
+document.querySelector('.mobile-menu-button').addEventListener('click', () => {
+    document.querySelector('.nav').classList.toggle('active');
 });
 
-// Функция для закрытия модального окна
-function closeRegistration() {
-    registrationModal.style.display = 'none'; // Скрываем окно
-}
-
-// Закрытие модального окна при клике вне окна
-window.addEventListener('click', function(event) {
-    if (event.target === registrationModal) {
-        closeRegistration();
+// Универсальные функции для работы с модальными окнами
+function showModal(modalId) {
+    const modal = document.getElementById(modalId);
+    if (modal) {
+        modal.style.display = 'flex';
+        document.body.style.overflow = 'hidden';
     }
-});
-
-// Создаем круг с героями
-heroes.forEach((hero, index) => {
-    const heroDiv = document.createElement('div');
-    heroDiv.className = 'hero';
-
-    // Позиционирование вокруг часов
-    const angle = (index * (360 / heroes.length)); // Угол в градусах
-    const radius = 125; // Радиус, на котором будут размещены персонажи
-
-    // Преобразуем угол в радианы
-    const radians = angle * (Math.PI / 180);
-
-    // Вычисляем координаты
-    const top = 50 + (radius * Math.sin(radians)); // Y-координата
-    const left = 50 + (radius * Math.cos(radians)); // X-координата
-
-    heroDiv.style.position = 'absolute';
-    heroDiv.style.top = `${top}%`;
-    heroDiv.style.left = `${left}%`;
-    
-    // Если есть изображение, добавляем его
-    const img = document.createElement('img');
-    img.src = `img/${index + 1}.jpg`; // Укажите путь к изображению
-    img.alt = `Герой ${index + 1}`;
-    
-    heroDiv.appendChild(img);
-    heroDiv.onclick = () => showDescription(hero);
-    
-    heroesCircle.appendChild(heroDiv);
-});
-
-// Функция для отображения описания героя
-function showDescription(description) {
-    const descriptionBox = document.querySelector('.description');
-    descriptionBox.innerText = description; // Заменяем на ваше описание
-    descriptionBox.style.display = 'block'; // Отображаем описание
 }
 
-// Функция для скрытия описания
-function hideDescription() {
-    const descriptionBox = document.querySelector('.description');
-    descriptionBox.style.display = 'none';
-}
-
-// Добавим обработчик клика вне описания, чтобы скрыть его
-document.addEventListener('click', (event) => {
-    const descriptionBox = document.querySelector('.description');
-    if (!descriptionBox.contains(event.target) && event.target.className !== 'hero') {
-        hideDescription();
+function hideModal(modalId) {
+    const modal = document.getElementById(modalId);
+    if (modal) {
+        modal.style.display = 'none';
+        document.body.style.overflow = '';
     }
+}
+
+// Обработчики для модального окна регистрации
+document.querySelector('.register-button').addEventListener('click', () => showModal('registration-modal'));
+document.querySelector('.close-btn').addEventListener('click', () => hideModal('registration-modal'));
+
+// Обработчики для героев
+document.querySelectorAll('.hero').forEach(hero => {
+    hero.addEventListener('click', () => {
+        const heroId = hero.dataset.hero;
+        showHeroDescription(heroId);
+    });
 });
 
-// Функция для отсчета времени
-function startCountdown(targetDate) {
-    function updateCountdown() {
-        const now = new Date().getTime();
-        const distance = targetDate - now;
-
-        if (distance < 0) {
-            document.getElementById("countdown-timer").innerHTML = "Время вышло!";
-            clearInterval(timerInterval);
-            return;
+function showHeroDescription(heroId) {
+    const modal = document.createElement('div');
+    modal.className = 'modal';
+    modal.id = 'hero-modal';
+    
+    const content = `
+        <div class="modal-content">
+            <span class="close-btn">&times;</span>
+            <img src="img/${heroId}.jpg" alt="Герой ${heroId}">
+            <h3>Герой ${heroId}</h3>
+            <p>${heroes[heroId - 1]}</p>
+        </div>
+    `;
+    
+    modal.innerHTML = content;
+    document.body.appendChild(modal);
+    
+    modal.querySelector('.close-btn').addEventListener('click', () => {
+        modal.remove();
+    });
+    
+    modal.addEventListener('click', (e) => {
+        if (e.target === modal) {
+            modal.remove();
         }
-
-        const days = Math.floor(distance / (1000 * 60 * 60 * 24));
-        const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-        const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
-        const seconds = Math.floor((distance % (1000 * 60)) / 1000);
-
-        document.getElementById("countdown-timer").innerHTML =
-            `${days}д ${hours}ч ${minutes}м ${seconds}с`;
-    }
-
-    updateCountdown();
-    const timerInterval = setInterval(updateCountdown, 1000);
+    });
 }
 
-// Укажи свою дату (ГОД, МЕСЯЦ (0-11), ДЕНЬ, ЧАСЫ, МИНУТЫ, СЕКУНДЫ)
-const countdownDate = new Date(2025, 5, 26, 12, 0, 0).getTime(); // 1 июня 2025, 12:00
-startCountdown(countdownDate);
+// Функция для обновления стрелок часов
+function updateClock() {
+    const now = new Date();
+    const seconds = now.getSeconds();
+    const minutes = now.getMinutes();
+    const hours = now.getHours() % 12;
 
-// Функция для анимации обновления цифры таймера
-function updateCountdown(digitElement, newValue) {
-    if (digitElement.textContent !== newValue) {
-        digitElement.setAttribute("data-next", newValue);
-        digitElement.classList.add("animating");
+    const secondDegrees = ((seconds / 60) * 360) + 90;
+    const minuteDegrees = ((minutes / 60) * 360) + ((seconds / 60) * 6) + 90;
+    const hourDegrees = ((hours / 12) * 360) + ((minutes / 60) * 30) + 90;
 
-        setTimeout(() => {
-            digitElement.textContent = newValue;
-            digitElement.classList.remove("animating");
-        }, 500);
-    }
+    const secondHand = document.querySelector('.second-hand');
+    const minuteHand = document.querySelector('.minute-hand');
+    const hourHand = document.querySelector('.hour-hand');
+
+    if (secondHand) secondHand.style.transform = `rotate(${secondDegrees}deg)`;
+    if (minuteHand) minuteHand.style.transform = `rotate(${minuteDegrees}deg)`;
+    if (hourHand) hourHand.style.transform = `rotate(${hourDegrees}deg)`;
 }
 
-// Пример обновления секунд
-setInterval(() => {
-    let seconds = new Date().getSeconds();
-    let digits = document.querySelectorAll(".countdown-digit");
-    let sec1 = Math.floor(seconds / 10);
-    let sec2 = seconds % 10;
+// Функция для обновления обратного отсчета
+function updateCountdown() {
+    const targetDate = new Date('2025-05-26T00:00:00').getTime();
+    const now = new Date().getTime();
+    const distance = targetDate - now;
 
-    updateCountdown(digits[3], sec1);
-    updateCountdown(digits[4], sec2);
-}, 1000);
+    if (distance <= 0) {
+        document.getElementById('countdown-timer').innerHTML = '<span class="countdown-digit">Игра уже вышла!</span>';
+        return;
+    }
 
-// Улучшенная валидация формы
+    const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+    const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+    const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+    const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+    document.getElementById('days').textContent = String(days).padStart(2, '0');
+    document.getElementById('hours').textContent = String(hours).padStart(2, '0');
+    document.getElementById('minutes').textContent = String(minutes).padStart(2, '0');
+    document.getElementById('seconds').textContent = String(seconds).padStart(2, '0');
+}
+
+// Валидация формы регистрации
 function validateForm() {
     const username = document.getElementById('username').value;
     const email = document.getElementById('email').value;
@@ -157,33 +147,28 @@ function validateForm() {
     let isValid = true;
     const errors = [];
 
-    // Проверка имени пользователя
     if (username.length < 3) {
         errors.push('Имя пользователя должно содержать минимум 3 символа');
         isValid = false;
     }
 
-    // Проверка email
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(email)) {
         errors.push('Введите корректный email адрес');
         isValid = false;
     }
 
-    // Проверка пароля
     const passwordRegex = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/;
     if (!passwordRegex.test(password)) {
         errors.push('Пароль должен содержать минимум 8 символов, включая буквы и цифры');
         isValid = false;
     }
 
-    // Проверка совпадения паролей
     if (password !== confirmPassword) {
         errors.push('Пароли не совпадают');
         isValid = false;
     }
 
-    // Показываем ошибки
     const errorContainer = document.getElementById('error-container');
     if (!isValid) {
         errorContainer.innerHTML = errors.map(error => `<p class="error">${error}</p>`).join('');
@@ -195,7 +180,7 @@ function validateForm() {
     return isValid;
 }
 
-// Обновленная функция отправки формы
+// Отправка формы регистрации
 async function submitRegistration(event) {
     event.preventDefault();
     
@@ -213,10 +198,8 @@ async function submitRegistration(event) {
         const email = document.getElementById('email').value;
         const password = document.getElementById('password').value;
 
-        // Создаем пользователя в Firebase
         const userCredential = await createUserWithEmailAndPassword(auth, email, password);
         
-        // Сохраняем дополнительную информацию
         await addDoc(collection(db, "users"), {
             uid: userCredential.user.uid,
             username: username,
@@ -224,17 +207,14 @@ async function submitRegistration(event) {
             createdAt: new Date()
         });
 
-        // Показываем сообщение об успехе
         showNotification('Регистрация успешно завершена!', 'success');
-        closeRegistration();
+        hideModal('registration-modal');
         document.getElementById('registration-form').reset();
     } catch (error) {
         let errorMessage = 'Произошла ошибка при регистрации';
-        
         if (error.code === 'auth/email-already-in-use') {
-            errorMessage = 'Пользователь с таким email уже существует';
+            errorMessage = 'Этот email уже зарегистрирован';
         }
-        
         showNotification(errorMessage, 'error');
     } finally {
         submitButton.disabled = false;
@@ -242,7 +222,7 @@ async function submitRegistration(event) {
     }
 }
 
-// Функция для показа уведомлений
+// Уведомления
 function showNotification(message, type) {
     const notification = document.createElement('div');
     notification.className = `notification ${type}`;
@@ -256,96 +236,213 @@ function showNotification(message, type) {
     
     setTimeout(() => {
         notification.classList.remove('show');
-        setTimeout(() => {
-            notification.remove();
-        }, 300);
+        setTimeout(() => notification.remove(), 300);
     }, 3000);
 }
 
-// Функция для обновления стрелок часов
-function updateClock() {
-    const now = new Date();
-    const hours = now.getHours() % 12;
-    const minutes = now.getMinutes();
-    const seconds = now.getSeconds();
-
-    // Вычисляем углы для стрелок
-    const hourDegrees = (hours * 30) + (minutes / 2); // 30 градусов в час (360/12)
-    const minuteDegrees = minutes * 6; // 6 градусов в минуту (360/60)
-    const secondDegrees = seconds * 6; // 6 градусов в секунду (360/60)
-
-    // Обновляем положение стрелок
-    document.querySelector('.hour-hand').style.transform = `translateX(-50%) rotate(${hourDegrees}deg)`;
-    document.querySelector('.minute-hand').style.transform = `translateX(-50%) rotate(${minuteDegrees}deg)`;
-    document.querySelector('.second-hand').style.transform = `translateX(-50%) rotate(${secondDegrees}deg)`;
-}
-
-// Обновляем часы каждую секунду
-setInterval(updateClock, 1000);
-// Запускаем часы сразу при загрузке страницы
-updateClock();
-
-// Анимация появления элементов при скролле
-function handleScrollAnimation() {
-    const elements = document.querySelectorAll('.art-block, .content h1, .content p');
+// Инициализация при загрузке страницы
+document.addEventListener('DOMContentLoaded', () => {
+    updateClock();
+    setInterval(updateClock, 1000);
+    updateCountdown();
+    setInterval(updateCountdown, 1000);
     
-    elements.forEach(element => {
-        const elementTop = element.getBoundingClientRect().top;
-        const elementBottom = element.getBoundingClientRect().bottom;
-        
-        if (elementTop < window.innerHeight && elementBottom > 0) {
-            element.classList.add('visible');
-        }
-    });
-}
-
-// Плавный скролл к секциям
-document.querySelectorAll('header a').forEach(anchor => {
-    anchor.addEventListener('click', function(e) {
-        const href = this.getAttribute('href');
-        if (href !== '#') {
-            e.preventDefault();
-            const target = document.querySelector(href);
-            if (target) {
-                target.scrollIntoView({
-                    behavior: 'smooth',
-                    block: 'start'
-                });
+    // Восстановление выбранного языка
+    const savedLanguage = localStorage.getItem('selectedLanguage');
+    if (savedLanguage) {
+        updatePageLanguage(savedLanguage);
+    }
+    
+    // Проверка существования изображений
+    document.querySelectorAll('img').forEach(img => {
+        checkImageExists(img.src).then(exists => {
+            if (!exists) {
+                img.src = 'img/placeholder.jpg';
             }
+        });
+    });
+});
+
+// Проверка существования изображения
+function checkImageExists(url) {
+    return new Promise((resolve) => {
+        const img = new Image();
+        img.onload = () => resolve(true);
+        img.onerror = () => resolve(false);
+        img.src = url;
+    });
+}
+
+// Функционал переключения языков
+const languageButtons = document.querySelectorAll('.language-button');
+const currentLanguage = localStorage.getItem('language') || 'ru';
+
+// Установка начального языка
+document.documentElement.lang = currentLanguage;
+document.querySelector(`.language-button[data-lang="${currentLanguage}"]`).classList.add('active');
+
+// Обработчики для кнопок переключения языка
+languageButtons.forEach(button => {
+    button.addEventListener('click', () => {
+        const lang = button.dataset.lang;
+        
+        // Удаляем активный класс у всех кнопок
+        languageButtons.forEach(btn => btn.classList.remove('active'));
+        // Добавляем активный класс выбранной кнопке
+        button.classList.add('active');
+        
+        // Сохраняем выбранный язык
+        localStorage.setItem('language', lang);
+        document.documentElement.lang = lang;
+        
+        // Здесь можно добавить логику для изменения текста на странице
+        updatePageLanguage(lang);
+    });
+});
+
+// Функция для обновления текста на странице
+function updatePageLanguage(lang) {
+    const translations = {
+        ru: {
+            'nav-home': 'Главная',
+            'nav-about': 'О нас',
+            'nav-contact': 'Контакты',
+            'btn-login': 'Войти',
+            'btn-register': 'Регистрация'
+        },
+        en: {
+            'nav-home': 'Home',
+            'nav-about': 'About',
+            'nav-contact': 'Contact',
+            'btn-login': 'Login',
+            'btn-register': 'Register'
+        }
+    };
+
+    // Обновляем текст на странице
+    Object.keys(translations[lang]).forEach(key => {
+        const elements = document.querySelectorAll(`[data-translate="${key}"]`);
+        elements.forEach(element => {
+            element.textContent = translations[lang][key];
+        });
+    });
+}
+
+// Инициализация языка при загрузке страницы
+updatePageLanguage(currentLanguage);
+
+// Добавляем обработчик скролла
+window.addEventListener('scroll', handleScrollAnimation);
+
+// Функционал модального окна регистрации
+const registrationModal = document.querySelector('.registration-modal');
+const btnRegister = document.querySelector('.btn-register');
+const closeRegistration = document.querySelector('.close-registration');
+
+// Открытие модального окна при нажатии на кнопку регистрации
+btnRegister.addEventListener('click', (e) => {
+    e.preventDefault(); // Предотвращаем переход по ссылке
+    registrationModal.classList.add('active');
+});
+
+// Закрытие модального окна
+closeRegistration.addEventListener('click', () => {
+    registrationModal.classList.remove('active');
+});
+
+// Закрытие модального окна при клике вне его
+window.addEventListener('click', (e) => {
+    if (e.target === registrationModal) {
+        registrationModal.classList.remove('active');
+    }
+});
+
+// Обработка отправки формы регистрации
+const registrationForm = document.querySelector('.registration-form');
+registrationForm.addEventListener('submit', (e) => {
+    e.preventDefault();
+    // Здесь можно добавить логику обработки регистрации
+    registrationModal.classList.remove('active');
+});
+
+// Функции для работы с модальным окном регистрации
+function openRegistrationModal() {
+    const modal = document.getElementById('registration-modal');
+    modal.style.display = 'block';
+}
+
+function closeRegistrationModal() {
+    const modal = document.getElementById('registration-modal');
+    modal.style.display = 'none';
+}
+
+// Закрытие модального окна при клике вне его
+window.onclick = function(event) {
+    const modal = document.getElementById('registration-modal');
+    if (event.target === modal) {
+        closeRegistrationModal();
+    }
+}
+
+// Обработка отправки формы регистрации
+function submitRegistration(event) {
+    event.preventDefault();
+    
+    const username = document.getElementById('username').value;
+    const email = document.getElementById('email').value;
+    const password = document.getElementById('password').value;
+    const confirmPassword = document.getElementById('confirm-password').value;
+    
+    // Проверка совпадения паролей
+    if (password !== confirmPassword) {
+        document.getElementById('error-container').innerHTML = 'Пароли не совпадают';
+        return;
+    }
+    
+    // Здесь можно добавить логику отправки данных на сервер
+    console.log('Регистрация:', { username, email, password });
+    
+    // Закрываем модальное окно после успешной регистрации
+    closeRegistrationModal();
+}
+
+// Функция для перевода контента
+function translateContent(lang) {
+    const elements = document.querySelectorAll('[data-translate]');
+    elements.forEach(element => {
+        const key = element.getAttribute('data-translate');
+        if (translations[lang] && translations[lang][key]) {
+            element.textContent = translations[lang][key];
+        }
+    });
+}
+
+// Обработчики для кнопок перевода
+document.querySelectorAll('.language-button').forEach(button => {
+    button.addEventListener('click', () => {
+        const lang = button.getAttribute('data-lang');
+        translateContent(lang);
+        
+        // Сохраняем выбранный язык
+        localStorage.setItem('language', lang);
+        
+        // Обновляем активную кнопку
+        document.querySelectorAll('.language-button').forEach(btn => {
+            btn.classList.remove('active');
+        });
+        button.classList.add('active');
+    });
+});
+
+// При загрузке страницы устанавливаем сохраненный язык
+document.addEventListener('DOMContentLoaded', () => {
+    const savedLang = localStorage.getItem('language') || 'ru';
+    translateContent(savedLang);
+    
+    // Устанавливаем активную кнопку
+    document.querySelectorAll('.language-button').forEach(button => {
+        if (button.getAttribute('data-lang') === savedLang) {
+            button.classList.add('active');
         }
     });
 });
-
-// Динамическая смена языка
-const languageButtons = document.querySelectorAll('.dropdown-content a');
-languageButtons.forEach(button => {
-    button.addEventListener('click', function(e) {
-        e.preventDefault();
-        const language = this.textContent;
-        document.querySelector('.dropdown-btn').textContent = language;
-        // Здесь можно добавить логику смены языка
-    });
-});
-
-// Анимация для героев вокруг часов
-function animateHeroes() {
-    const heroes = document.querySelectorAll('.hero');
-    heroes.forEach((hero, index) => {
-        const angle = (index * (360 / heroes.length)) + performance.now() * 0.02;
-        const radius = 125;
-        const radians = angle * (Math.PI / 180);
-        
-        const top = 50 + (radius * Math.sin(radians));
-        const left = 50 + (radius * Math.cos(radians));
-        
-        hero.style.top = `${top}%`;
-        hero.style.left = `${left}%`;
-    });
-    
-    requestAnimationFrame(animateHeroes);
-}
-
-// Запускаем анимации
-window.addEventListener('scroll', handleScrollAnimation);
-handleScrollAnimation(); // Вызываем один раз при загрузке
-animateHeroes();
