@@ -81,15 +81,24 @@ body {
 .game-logo {
     height: 50px;
     width: auto;
+    display: block;
 }
 
 .site-logo {
     height: 40px;
     width: auto;
+    display: block;
 }
 
-.logo:hover img {
+.logo-link {
+    display: flex;
+    align-items: center;
+    text-decoration: none;
+}
+
+.logo-link:hover img {
     transform: scale(1.05);
+    transition: transform 0.3s ease;
 }
 
 .nav {
