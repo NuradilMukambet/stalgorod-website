@@ -1,38 +1,3 @@
-import { auth, db } from './firebase.js';
-import { createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
-import { collection, addDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
-
-// Конфигурация Firebase
-const firebaseConfig = {
-    // Здесь должны быть ваши реальные данные конфигурации Firebase
-    apiKey: "YOUR_API_KEY",
-    authDomain: "YOUR_AUTH_DOMAIN",
-    projectId: "YOUR_PROJECT_ID",
-    storageBucket: "YOUR_STORAGE_BUCKET",
-    messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
-    appId: "YOUR_APP_ID"
-};
-
-// Инициализация Firebase
-if (!firebase.apps.length) {
-    firebase.initializeApp(firebaseConfig);
-}
-
-const heroes = [
-    'Описание героя 1',
-    'Описание героя 2',
-    'Описание героя 3',
-    'Описание героя 4',
-    'Описание героя 5',
-    'Описание героя 6',
-    'Описание героя 7',
-    'Описание героя 8',
-    'Описание героя 9',
-    'Описание героя 10',
-    'Описание героя 11',
-    'Описание героя 12'
-];
-
 // Обработчик мобильного меню
 document.querySelector('.mobile-menu-button').addEventListener('click', () => {
     document.querySelector('.nav').classList.toggle('active');
@@ -198,29 +163,204 @@ async function submitRegistration(event) {
         const email = document.getElementById('email').value;
         const password = document.getElementById('password').value;
 
-        const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-        
-        await addDoc(collection(db, "users"), {
-            uid: userCredential.user.uid,
-            username: username,
-            email: email,
-            createdAt: new Date()
+        const response = await fetch('/api/register', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ username, email, password })
         });
+
+        const data = await response.json();
+
+        if (!response.ok) {
+            throw new Error(data.message || 'Ошибка регистрации');
+        }
+
+        // Сохраняем токен в localStorage
+        localStorage.setItem('token', data.token);
+        localStorage.setItem('user', JSON.stringify(data.user));
 
         showNotification('Регистрация успешно завершена!', 'success');
         hideModal('registration-modal');
         document.getElementById('registration-form').reset();
+        
+        // Обновляем UI после успешной регистрации
+        updateAuthUI();
     } catch (error) {
-        let errorMessage = 'Произошла ошибка при регистрации';
-        if (error.code === 'auth/email-already-in-use') {
-            errorMessage = 'Этот email уже зарегистрирован';
-        }
-        showNotification(errorMessage, 'error');
+        showNotification(error.message, 'error');
     } finally {
         submitButton.disabled = false;
         submitButton.textContent = originalText;
     }
 }
+
+// Функция для проверки авторизации
+async function checkAuth() {
+    const token = localStorage.getItem('token');
+    if (!token) return false;
+
+    try {
+        const response = await fetch('/api/user', {
+            headers: {
+                'Authorization': `Bearer ${token}`
+            }
+        });
+
+        if (!response.ok) {
+            localStorage.removeItem('token');
+            localStorage.removeItem('user');
+            return false;
+        }
+
+        const user = await response.json();
+        localStorage.setItem('user', JSON.stringify(user));
+        return true;
+    } catch (error) {
+        console.error('Ошибка проверки авторизации:', error);
+        localStorage.removeItem('token');
+        localStorage.removeItem('user');
+        return false;
+    }
+}
+
+// Функция для добавления анимаций
+function addAnimations() {
+    // Анимации для кнопок
+    const buttons = document.querySelectorAll('.auth-button, .nav-link, .form-button');
+    buttons.forEach(button => {
+        button.addEventListener('mouseenter', () => {
+            button.style.transform = 'scale(1.05)';
+            button.style.boxShadow = '0 5px 15px rgba(0, 0, 0, 0.3)';
+        });
+        
+        button.addEventListener('mouseleave', () => {
+            button.style.transform = 'scale(1)';
+            button.style.boxShadow = 'none';
+        });
+        
+        button.addEventListener('click', () => {
+            button.style.transform = 'scale(0.95)';
+            setTimeout(() => {
+                button.style.transform = 'scale(1)';
+            }, 100);
+        });
+    });
+
+    // Анимации для форм
+    const inputs = document.querySelectorAll('input');
+    inputs.forEach(input => {
+        input.addEventListener('focus', () => {
+            input.style.transform = 'translateY(-2px)';
+            input.style.boxShadow = '0 5px 15px rgba(0, 0, 0, 0.1)';
+        });
+        
+        input.addEventListener('blur', () => {
+            input.style.transform = 'translateY(0)';
+            input.style.boxShadow = 'none';
+        });
+    });
+
+    // Анимации для навигации
+    const navLinks = document.querySelectorAll('.nav-link');
+    navLinks.forEach(link => {
+        link.addEventListener('mouseenter', () => {
+            link.style.transform = 'translateY(-2px)';
+        });
+        
+        link.addEventListener('mouseleave', () => {
+            link.style.transform = 'translateY(0)';
+        });
+    });
+}
+
+// Функция для обновления UI в зависимости от статуса авторизации
+function updateAuthUI(isAuthenticated) {
+    const loginButton = document.querySelector('.login-button');
+    const registerButton = document.querySelector('.register-button');
+    const logoutButton = document.querySelector('.logout-button');
+    const profileLink = document.querySelector('.profile-link');
+
+    if (isAuthenticated) {
+        if (loginButton) loginButton.style.display = 'none';
+        if (registerButton) registerButton.style.display = 'none';
+        if (logoutButton) logoutButton.style.display = 'block';
+        if (profileLink) profileLink.style.display = 'block';
+    } else {
+        if (loginButton) loginButton.style.display = 'block';
+        if (registerButton) registerButton.style.display = 'block';
+        if (logoutButton) logoutButton.style.display = 'none';
+        if (profileLink) profileLink.style.display = 'none';
+    }
+}
+
+// Обработчик для кнопки регистрации
+function handleRegisterButton() {
+    const registerButton = document.querySelector('.register-button');
+    if (registerButton) {
+        registerButton.addEventListener('click', () => {
+            const modal = document.querySelector('.modal');
+            if (modal) {
+                modal.style.display = 'block';
+            } else {
+                window.location.href = '/register.html';
+            }
+        });
+    }
+}
+
+// Обработчик для кнопки входа
+function handleLoginButton() {
+    const loginButton = document.querySelector('.login-button');
+    if (loginButton) {
+        loginButton.addEventListener('click', () => {
+            const modal = document.querySelector('.modal');
+            if (modal) {
+                modal.style.display = 'block';
+            } else {
+                window.location.href = '/login.html';
+            }
+        });
+    }
+}
+
+// Обработчик для кнопки выхода
+function handleLogoutButton() {
+    const logoutButton = document.querySelector('.logout-button');
+    if (logoutButton) {
+        logoutButton.addEventListener('click', () => {
+            localStorage.removeItem('token');
+            updateAuthUI(false);
+            window.location.href = '/';
+        });
+    }
+}
+
+// Инициализация при загрузке страницы
+document.addEventListener('DOMContentLoaded', async () => {
+    // Проверяем авторизацию
+    const isAuthenticated = await checkAuth();
+    
+    // Обновляем UI в зависимости от статуса авторизации
+    updateAuthUI(isAuthenticated);
+
+    // Добавляем анимации
+    addAnimations();
+
+    // Инициализация часов и обратного отсчета
+    updateClock();
+    setInterval(updateClock, 1000);
+    updateCountdown();
+    setInterval(updateCountdown, 1000);
+    
+    // Восстановление выбранного языка
+    const savedLang = localStorage.getItem('language') || 'ru';
+    updatePageLanguage(savedLang);
+
+    handleRegisterButton();
+    handleLoginButton();
+    handleLogoutButton();
+});
 
 // Уведомления
 function showNotification(message, type) {
@@ -239,29 +379,6 @@ function showNotification(message, type) {
         setTimeout(() => notification.remove(), 300);
     }, 3000);
 }
-
-// Инициализация при загрузке страницы
-document.addEventListener('DOMContentLoaded', () => {
-    updateClock();
-    setInterval(updateClock, 1000);
-    updateCountdown();
-    setInterval(updateCountdown, 1000);
-    
-    // Восстановление выбранного языка
-    const savedLanguage = localStorage.getItem('selectedLanguage');
-    if (savedLanguage) {
-        updatePageLanguage(savedLanguage);
-    }
-    
-    // Проверка существования изображений
-    document.querySelectorAll('img').forEach(img => {
-        checkImageExists(img.src).then(exists => {
-            if (!exists) {
-                img.src = 'img/placeholder.jpg';
-            }
-        });
-    });
-});
 
 // Проверка существования изображения
 function checkImageExists(url) {

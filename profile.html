@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Профиль - Стальгород</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="script.js" defer></script>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="background-image"></div>
+    <header class="header">
+        <a href="index.html" class="logo-link">
+            <div class="logo">
+                <img src="img/GameLogo.png" alt="Game Logo" class="game-logo">
+                <img src="img/Logo.png" alt="Logo" class="site-logo">
+            </div>
+        </a>
+        
+        <button class="mobile-menu-button">☰</button>
+        
+        <nav class="nav">
+            <ul class="nav-list">
+                <li class="nav-item">
+                    <a href="index.html" class="nav-link">Главная</a>
+                </li>
+                <li class="nav-item">
+                    <a href="about.html" class="nav-link">О проекте</a>
+                </li>
+                <li class="nav-item">
+                    <a href="profile.html" class="nav-link active">Профиль</a>
+                </li>
+            </ul>
+            
+            <div class="auth-buttons">
+                <div class="language-switcher">
+                    <button class="language-button" data-lang="ru">RU</button>
+                    <button class="language-button" data-lang="en">EN</button>
+                </div>
+                <button class="auth-button logout-button">Выйти</button>
+            </div>
+        </nav>
+    </header>
+
+    <div class="profile-container">
+        <div class="profile-box">
+            <div class="profile-header">
+                <div class="profile-avatar">
+                    <img src="img/default-avatar.png" alt="Аватар" id="profile-avatar">
+                    <button class="change-avatar-btn">Изменить</button>
+                </div>
+                <h2 id="profile-username">Загрузка...</h2>
+                <p id="profile-email">Загрузка...</p>
+            </div>
+            
+            <div class="profile-stats">
+                <div class="stat-item">
+                    <h3>Дата регистрации</h3>
+                    <p id="profile-created">Загрузка...</p>
+                </div>
+                <div class="stat-item">
+                    <h3>Последний вход</h3>
+                    <p id="profile-last-login">Загрузка...</p>
+                </div>
+            </div>
+            
+            <div class="profile-edit">
+                <h3>Редактировать профиль</h3>
+                <form id="profile-form">
+                    <div class="form-group">
+                        <label for="bio">О себе</label>
+                        <textarea id="bio" name="bio" rows="4"></textarea>
+                    </div>
+                    <button type="submit">Сохранить изменения</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Проверка авторизации при загрузке страницы
+        async function checkAuth() {
+            const token = localStorage.getItem('token');
+            if (!token) {
+                window.location.href = 'login.html';
+                return false;
+            }
+
+            try {
+                const response = await fetch('/api/user', {
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
+
+                if (!response.ok) {
+                    localStorage.removeItem('token');
+                    localStorage.removeItem('user');
+                    window.location.href = 'login.html';
+                    return false;
+                }
+
+                return true;
+            } catch (error) {
+                console.error('Ошибка проверки авторизации:', error);
+                localStorage.removeItem('token');
+                localStorage.removeItem('user');
+                window.location.href = 'login.html';
+                return false;
+            }
+        }
+
+        // Загрузка данных профиля
+        async function loadProfile() {
+            try {
+                const token = localStorage.getItem('token');
+                const response = await fetch('/api/user', {
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
+
+                if (!response.ok) {
+                    throw new Error('Ошибка загрузки профиля');
+                }
+
+                const user = await response.json();
+                
+                // Обновление данных на странице
+                document.getElementById('profile-username').textContent = user.username;
+                document.getElementById('profile-email').textContent = user.email;
+                document.getElementById('profile-created').textContent = new Date(user.created_at).toLocaleDateString();
+                document.getElementById('profile-last-login').textContent = user.last_login ? new Date(user.last_login).toLocaleDateString() : 'Нет данных';
+                document.getElementById('bio').value = user.bio || '';
+                
+                if (user.avatar_url) {
+                    document.getElementById('profile-avatar').src = user.avatar_url;
+                }
+            } catch (error) {
+                console.error('Ошибка:', error);
+                alert('Ошибка загрузки профиля');
+            }
+        }
+
+        // Обработка формы редактирования
+        document.getElementById('profile-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const bio = document.getElementById('bio').value;
+            const token = localStorage.getItem('token');
+            
+            try {
+                const response = await fetch('/api/user', {
+                    method: 'PUT',
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ bio })
+                });
+
+                if (!response.ok) {
+                    throw new Error('Ошибка сохранения изменений');
+                }
+
+                alert('Изменения сохранены');
+            } catch (error) {
+                console.error('Ошибка:', error);
+                alert('Ошибка сохранения изменений');
+            }
+        });
+
+        // Обработка выхода
+        document.querySelector('.logout-button').addEventListener('click', () => {
+            localStorage.removeItem('token');
+            localStorage.removeItem('user');
+            window.location.href = 'index.html';
+        });
+
+        // Инициализация при загрузке страницы
+        document.addEventListener('DOMContentLoaded', async () => {
+            const isAuthenticated = await checkAuth();
+            if (isAuthenticated) {
+                await loadProfile();
+            }
+        });
+    </script>
+</body>
+</html> 
