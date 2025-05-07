@@ -1027,30 +1027,48 @@ footer .social-media a {
 
 /* Стили для секции поддержки */
 .support-section {
+<<<<<<< HEAD
     padding: 40px 20px;
     text-align: center;
     background: rgba(0, 0, 0, 0.8);
     margin: 40px 0;
+=======
+    background-color: #2a2a2a;
+    padding: 40px 0;
+    margin: 40px 0;
+    text-align: center;
+>>>>>>> 150c8b14d8fc7350cbd779209454e28eecca598e
 }
 
 .support-section h3 {
     color: #fff;
+<<<<<<< HEAD
     margin-bottom: 30px;
     font-size: 24px;
+=======
+    font-size: 24px;
+    margin-bottom: 30px;
+>>>>>>> 150c8b14d8fc7350cbd779209454e28eecca598e
 }
 
 .support-logos {
     display: flex;
     justify-content: center;
     align-items: center;
+<<<<<<< HEAD
     gap: 30px;
     flex-wrap: wrap;
     margin-bottom: 30px;
+=======
+    gap: 20px;
+    padding: 20px;
+>>>>>>> 150c8b14d8fc7350cbd779209454e28eecca598e
 }
 
 .support-logo {
     max-width: 200px;
     height: auto;
+<<<<<<< HEAD
     transition: transform 0.3s ease;
 }
 
@@ -1070,6 +1088,30 @@ footer .social-media a {
 
 .support-text p {
     margin: 0;
+=======
+    transition: transform 0.3s ease, filter 0.3s ease;
+    filter: brightness(0) invert(1);
+}
+
+.support-logo:hover {
+    transform: scale(1.1);
+    filter: brightness(1) invert(0);
+}
+
+.support-logos a {
+    display: inline-block;
+    transition: transform 0.3s ease;
+}
+
+.support-logos a:hover {
+    transform: scale(1.1);
+}
+
+.support-logos p {
+    color: #fff;
+    margin-top: 10px;
+    font-size: 16px;
+>>>>>>> 150c8b14d8fc7350cbd779209454e28eecca598e
 }
 
 /* Стили для виджета ФАСИ */
@@ -1718,6 +1760,7 @@ footer .social-media a {
         opacity: 1;
     }
 }
+<<<<<<< HEAD
 
 .development-timeline {
     margin: 40px 0;
@@ -2122,3 +2165,5 @@ main {
   .features-title { font-size: 24px; }
   .feature-card { padding: 20px 8px 18px 8px; }
 }
+=======
+>>>>>>> 150c8b14d8fc7350cbd779209454e28eecca598e
