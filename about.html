@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>О проекте - Stalgorod</title>
+    <link rel="stylesheet" href="style.css">
+    <script type="module" src="script.js" defer></script>
+</head>
+<body>
+    <header class="header">
+        <a href="index.html" class="logo">
+            <div class="logo">
+                <img src="img/GameLogo.png" alt="Game Logo" class="game-logo">
+                <img src="img/Logo.png" alt="Logo" class="site-logo">
+            </div>
+        </a>
+        
+        <button class="mobile-menu-button">☰</button>
+        
+        <nav class="nav">
+            <ul class="nav-list">
+                <li class="nav-item">
+                    <a href="index.html" class="nav-link" data-translate="nav-home">Главная</a>
+                </li>
+                <li class="nav-item">
+                    <a href="about.html" class="nav-link active" data-translate="nav-about">О проекте</a>
+                </li>
+                <li class="nav-item">
+                    <a href="news.html" class="nav-link" data-translate="nav-news">Новости</a>
+                </li>
+            </ul>
+            
+            <div class="auth-buttons">
+                <div class="language-switcher">
+                    <button class="language-button" data-lang="ru">RU</button>
+                    <button class="language-button" data-lang="en">EN</button>
+                </div>
+                <a href="login.html" class="auth-button login-button" data-translate="btn-login">Войти</a>
+                <button class="auth-button register-button" onclick="openRegistrationModal()" data-translate="btn-register">Регистрация</button>
+            </div>
+        </nav>
+    </header>
+
+   
+
+    <!-- Модальное окно регистрации -->
+    <div id="registration-modal" class="modal">
+        <div class="modal-content">
+            <span class="close-btn" onclick="closeRegistration()">×</span>
+            <h2 data-translate="reg-title">Регистрация</h2>
+            <div id="error-container"></div>
+            <form id="registration-form" onsubmit="submitRegistration(event)">
+                <div class="form-group">
+                    <input type="text" id="username" name="username" required placeholder=" ">
+                    <label for="username" data-translate="reg-username">Имя пользователя</label>
+                </div>
+                
+                <div class="form-group">
+                    <input type="email" id="email" name="email" required placeholder=" ">
+                    <label for="email" data-translate="reg-email">Электронная почта</label>
+                </div>
+                
+                <div class="form-group">
+                    <input type="password" id="password" name="password" required placeholder=" ">
+                    <label for="password" data-translate="reg-password">Пароль</label>
+                </div>
+                
+                <div class="form-group">
+                    <input type="password" id="confirm-password" name="confirm-password" required placeholder=" ">
+                    <label for="confirm-password" data-translate="reg-confirm">Подтверждение пароля</label>
+                </div>
+                
+                <button type="submit" data-translate="reg-submit">Зарегистрироваться</button>
+            </form>
+        </div>
+    </div>
+
+    <main>
+        <section class="about-section">
+            <div class="container">
+                <h1 data-translate="about-title">О проекте</h1>
+                <div class="about-content">
+                    <h2>Этапы разработки</h2>
+                    <div class="development-timeline">
+                        <div class="timeline-item">
+                            <h3>Этап 1: Концепция и планирование</h3>
+                            <p>Начало работы над проектом, разработка концепции игры, создание базового сюжета и механик. Определение основных технических требований и формирование команды разработчиков.</p>
+                        </div>
+                        
+                        <div class="timeline-item">
+                            <h3>Этап 2: Прототипирование</h3>
+                            <p>Создание первых прототипов игровых механик, разработка базового движка и тестирование основных игровых элементов. На этом этапе были определены ключевые особенности геймплея.</p>
+                        </div>
+                        
+                        <div class="timeline-item">
+                            <h3>Этап 3: Разработка альфа-версии</h3>
+                            <p>Реализация основных игровых механик, создание базовых уровней и тестирование производительности. Начало работы над графикой и звуковым сопровождением.</p>
+                        </div>
+                        
+                        <div class="timeline-item">
+                            <h3>Этап 4: Тестирование и оптимизация</h3>
+                            <p>Проведение закрытого бета-тестирования с привлечением фокус-группы. Сбор обратной связи и внесение необходимых корректировок в геймплей, графику и производительность.</p>
+                        </div>
+                        
+                        <div class="timeline-item">
+                            <h3>Этап 5: Финальная разработка</h3>
+                            <p>Завершение разработки всех игровых механик, финализация графики и звука, подготовка к релизу. На этом этапе были внедрены все запланированные функции и проведено финальное тестирование.</p>
+                        </div>
+                    </div>
+
+                    <h2>Тестирование игры</h2>
+                    <div class="testing-info">
+                        <p>В процессе разработки "Стальгорода" было проведено несколько этапов тестирования:</p>
+                        <ul>
+                            <li>Внутреннее тестирование командой разработчиков</li>
+                            <li>Закрытое бета-тестирование с привлечением 100 игроков</li>
+                            <li>Тестирование производительности на различных конфигурациях</li>
+                            <li>Тестирование сетевой составляющей</li>
+                            <li>Тестирование баланса игровых механик</li>
+                        </ul>
+                        <p>По результатам тестирования были внесены значительные улучшения в геймплей, оптимизирована производительность и исправлены выявленные ошибки.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+    <section class="trailer-section">
+        <h2 class="trailer-title">О проекте</h2>
+        <div class="trailer-container">
+            <video controls>
+                <source src="video/0001-0502.mp4" type="video/mp4">
+                Ваш браузер не поддерживает видео.
+            </video>
+            <div class="trailer-text">
+                <h3>Стальгород</h3>
+                <p>Стальгород — шутер от первого лица в сердце разрушенной империи.
+
+                    Окунитесь в эпичную битву под Сталинградом, где каждый шаг может стать последним. "Стальгород" — это шутер от первого лица с элементами выживания и стратегии, где вам предстоит бороться за свою жизнь в условиях мрачного и разрушенного города.
+                    
+                    Станьте главным героем, которому предстоит пройти через суровые испытания, столкнуться с врагами и решить судьбу Стальгорода. В этой игре вы окажетесь в самом центре разрушенной метрополии, полной опустошения, войны и угроз. Ваше главное оружие — это не только огнестрельное оружие, но и умение выживать, адаптироваться и использовать окружающий мир.
+                    
+                    Что вас ждет в "Стальгороде":
+                    
+                    Напряженные сражения в разрушенном городе, где каждый угол может скрывать опасность.
+                    Исследование враждебной территории, где руины и выжженные земли становятся частью вашего пути.
+                    Интуитивно понятная система выживания, где каждое решение влияет на ваше будущее.
+                    Мрачная и атмосферная история, наполненная опасностями и неожиданными поворотами.
+                    Уникальная графика, воссоздающая реалистичные разрушенные пейзажи и динамичную атмосферу Сталгорода.
+                    Готовы ли вы выжить в условиях, где война и выживание переплетаются, а каждый день — это борьба за жизнь? Стальгород ждет своего героя.</p>
+            </div>
+        </div>
+    </section>
+    
+    <div class="support-section">
+        <h3>Нас поддерживают</h3>
+        <div class="support-logos">
+            <a href="https://fasie.ru" target="_blank">
+                <img src="img/images.png" alt="ФАСИ" class="support-logo">
+            </a>
+        </div>
+        <div class="support-text">
+            <p>Проект создан при поддержке Федерального государственного бюджетного учреждения "Фонд содействия развитию малых форм предприятий в научно-технической сфере в рамках программы "Студенческий стартап" федерального проекта "Платформа университетского технологического предпринимательства".</p>
+        </div>
+    </div>
+
+    <footer>
+        <div class="social-media">
+            <p>Следите за нами:</p>
+            <a href="#">YouTube</a> | <a href="#">Facebook</a> | <a href="#">Twitter</a>
+        </div>
+    </footer>
+
+    <div id="description-modal" class="modal">
+        <div id="description-content" class="modal-content">
+            <span id="close-btn" onclick="hideDescription()">×</span>
+            <p id="hero-description"></p>
+        </div>
+    </div>
+</body>
+</html> 

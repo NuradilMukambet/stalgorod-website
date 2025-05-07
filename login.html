@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Вход - Стальгород</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="script.js" defer></script>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="background-image"></div>
+    <header class="header">
+        <a href="index.html" class="logo-link">
+            <div class="logo">
+                <img src="img/GameLogo.png" alt="Game Logo" class="game-logo">
+                <img src="img/Logo.png" alt="Logo" class="site-logo">
+            </div>
+        </a>
+    </header>
+
+    <div class="auth-container">
+        <div class="auth-box">
+            <h2>Вход в аккаунт</h2>
+            <div id="error-container"></div>
+            <form id="login-form">
+                <div class="form-group">
+                    <input type="email" id="email" name="email" required placeholder=" ">
+                    <label for="email">Электронная почта</label>
+                </div>
+                
+                <div class="form-group">
+                    <input type="password" id="password" name="password" required placeholder=" ">
+                    <label for="password">Пароль</label>
+                </div>
+                
+                <button type="submit">Войти</button>
+            </form>
+            <p class="auth-link">Нет аккаунта? <a href="register.html">Зарегистрироваться</a></p>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('login-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            
+            try {
+                const response = await fetch('/api/login', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ email, password })
+                });
+                
+                const data = await response.json();
+                
+                if (!response.ok) {
+                    throw new Error(data.message || 'Ошибка входа');
+                }
+                
+                // Сохраняем токен и данные пользователя
+                localStorage.setItem('token', data.token);
+                localStorage.setItem('user', JSON.stringify(data.user));
+                
+                // Перенаправляем на главную страницу
+                window.location.href = 'index.html';
+            } catch (error) {
+                const errorContainer = document.getElementById('error-container');
+                errorContainer.innerHTML = `<p class="error">${error.message}</p>`;
+                errorContainer.style.display = 'block';
+            }
+        });
+    </script>
+</body>
+</html> 

@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Сайт с 3D-часами</title>
+    <link rel="stylesheet" href="style.css">
+    <script type="module" src="script.js" defer></script>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="background-image"></div>
+    <header class="header">
+        <a href="index.html" class="logo-link">
+            <div class="logo">
+                <img src="img/GameLogo.png" alt="Game Logo" class="game-logo">
+                <img src="img/Logo.png" alt="Logo" class="site-logo">
+            </div>
+        </a>
+        
+        <button class="mobile-menu-button">☰</button>
+        
+        <nav class="nav">
+            <ul class="nav-list">
+                <li class="nav-item">
+                    <a href="index.html" class="nav-link active">Главная</a>
+                </li>
+                <li class="nav-item">
+                    <a href="about.html" class="nav-link">О проекте</a>
+                </li>
+                <li class="nav-item">
+                    <a href="news.html" class="nav-link">Новости</a>
+                </li>
+            </ul>
+            
+            <div class="auth-buttons">
+                <div class="language-switcher">
+                    <button class="language-button" data-lang="ru">RU</button>
+                    <button class="language-button" data-lang="en">EN</button>
+                </div>
+                <a href="login.html" class="auth-button login-button">Войти</a>
+                <button class="auth-button register-button">Регистрация</button>
+            </div>
+        </nav>
+    </header>
+
+    <!-- Модальное окно регистрации -->
+    <div id="registration-modal" class="modal">
+        <div class="modal-content">
+            <span class="close-btn">&times;</span>
+            <h2>Регистрация</h2>
+            <div id="error-container"></div>
+            <form id="registration-form" onsubmit="submitRegistration(event)">
+                <div class="form-group">
+                    <input type="text" id="username" name="username" required placeholder=" ">
+                    <label for="username">Имя пользователя</label>
+                </div>
+                
+                <div class="form-group">
+                    <input type="email" id="email" name="email" required placeholder=" ">
+                    <label for="email">Электронная почта</label>
+                </div>
+                
+                <div class="form-group">
+                    <input type="password" id="password" name="password" required placeholder=" ">
+                    <label for="password">Пароль</label>
+                </div>
+                
+                <div class="form-group">
+                    <input type="password" id="confirm-password" name="confirm-password" required placeholder=" ">
+                    <label for="confirm-password">Подтверждение пароля</label>
+                </div>
+                
+                <button type="submit">Зарегистрироваться</button>
+            </form>
+        </div>
+    </div>
+
+    <section class="clock-section">
+        <div class="clock-container">
+            <div class="clock">
+                <div class="clock-face">
+                    <span class="hand hour-hand"></span>
+                    <span class="hand minute-hand"></span>
+                    <span class="hand second-hand"></span>
+                    <div class="clock-center"></div>
+                    <!-- Цифры на часах -->
+                    <div class="number number1">1</div>
+                    <div class="number number2">2</div>
+                    <div class="number number3">3</div>
+                    <div class="number number4">4</div>
+                    <div class="number number5">5</div>
+                    <div class="number number6">6</div>
+                    <div class="number number7">7</div>
+                    <div class="number number8">8</div>
+                    <div class="number number9">9</div>
+                    <div class="number number10">10</div>
+                    <div class="number number11">11</div>
+                    <div class="number number12">12</div>
+                </div>
+            </div>
+            <div id="countdown-timer">
+                <span class="countdown-digit" id="days">00</span>
+                <span class="countdown-separator">:</span>
+                <span class="countdown-digit" id="hours">00</span>
+                <span class="countdown-separator">:</span>
+                <span class="countdown-digit" id="minutes">00</span>
+                <span class="countdown-separator">:</span>
+                <span class="countdown-digit" id="seconds">00</span>
+            </div>
+            <div class="heroes-circle">
+                <div class="hero" data-hero="1"><img src="img/1.jpg" alt="Герой 1"></div>
+                <div class="hero" data-hero="2"><img src="img/2.jpg" alt="Герой 2"></div>
+                <div class="hero" data-hero="3"><img src="img/3.jpg" alt="Герой 3"></div>
+                <div class="hero" data-hero="4"><img src="img/4.jpg" alt="Герой 4"></div>
+                <div class="hero" data-hero="5"><img src="img/5.jpg" alt="Герой 5"></div>
+                <div class="hero" data-hero="6"><img src="img/6.jpg" alt="Герой 6"></div>
+                <div class="hero" data-hero="7"><img src="img/7.jpg" alt="Герой 7"></div>
+                <div class="hero" data-hero="8"><img src="img/8.jpg" alt="Герой 8"></div>
+                <div class="hero" data-hero="9"><img src="img/9.jpg" alt="Герой 9"></div>
+                <div class="hero" data-hero="10"><img src="img/10.jpg" alt="Герой 10"></div>
+                <div class="hero" data-hero="11"><img src="img/11.jpg" alt="Герой 11"></div>
+                <div class="hero" data-hero="12"><img src="img/12.jpg" alt="Герой 12"></div>
+            </div>
+        </div>
+    </section>
+
+    <div class="content">
+        <h1>Добро пожаловать в Стальгород</h1>
+        <p>Это постапокалиптический город с богатой атмосферой стимпанка.</p>
+    </div>
+
+    <div id="description" class="description">
+        <span id="description-text"></span>
+        <button onclick="hideDescription()">Закрыть</button>
+    </div>
+
+    <div class="art-blocks">
+        <div class="art-block" data-title="Билд 1" onclick="showDescription('Билд 1')">
+            <img src="img/1.png" alt="Билд 1" />
+        </div>
+        <div class="art-block" data-title="Билд 2" onclick="showDescription('Билд 2')">
+            <img src="img/2.png" alt="Билд 2" />
+        </div>
+        <div class="art-block" data-title="Билд 3" onclick="showDescription('Билд 3')">
+            <img src="img/3.png" alt="Билд 3" />
+        </div>
+        <div class="art-block" data-title="Билд 4" onclick="showDescription('Билд 4')">
+            <img src="img/4.png" alt="Билд 4" />
+        </div>
+        <div class="art-block" data-title="Билд 5" onclick="showDescription('Билд 5')">
+            <img src="img/5.png" alt="Билд 5" />
+        </div>
+        <div class="art-block" data-title="Билд 6" onclick="showDescription('Билд 6')">
+            <img src="img/6.png" alt="Билд 6" />
+        </div>
+    </div>
+    
+    
+    <section class="trailer-section">
+        <h2 class="trailer-title">Трейлер</h2>
+        <div class="trailer-container">
+            <video controls>
+                <source src="video/0001-0502.mp4" type="video/mp4">
+                Ваш браузер не поддерживает видео.
+            </video>
+            <div class="trailer-text">
+                <h3>Стальгород</h3>
+                <p>Стальгород — шутер от первого лица в сердце разрушенной империи.
+
+                    Окунитесь в эпичную битву под Сталинградом, где каждый шаг может стать последним. "Стальгород" — это шутер от первого лица с элементами выживания и стратегии, где вам предстоит бороться за свою жизнь в условиях мрачного и разрушенного города.
+                    
+                    Станьте главным героем, которому предстоит пройти через суровые испытания, столкнуться с врагами и решить судьбу Стальгорода. В этой игре вы окажетесь в самом центре разрушенной метрополии, полной опустошения, войны и угроз. Ваше главное оружие — это не только огнестрельное оружие, но и умение выживать, адаптироваться и использовать окружающий мир.
+                    
+                    Что вас ждет в "Стальгороде":
+                    
+                    Напряженные сражения в разрушенном городе, где каждый угол может скрывать опасность.
+                    Исследование враждебной территории, где руины и выжженные земли становятся частью вашего пути.
+                    Интуитивно понятная система выживания, где каждое решение влияет на ваше будущее.
+                    Мрачная и атмосферная история, наполненная опасностями и неожиданными поворотами.
+                    Уникальная графика, воссоздающая реалистичные разрушенные пейзажи и динамичную атмосферу Сталгорода.
+                    Готовы ли вы выжить в условиях, где война и выживание переплетаются, а каждый день — это борьба за жизнь? Стальгород ждет своего героя.</p>
+            </div>
+        </div>
+    </section>
+    
+    
+    
+    
+
+    <div class="container">
+      <div class="info-row-cards">
+        <div class="requirement-card">
+          <div class="card-title">Минимальные требования</div>
+          <ul class="card-list">
+            <li>Версия ОС: Windows 10 / Windows 11</li>
+            <li>Процессор: AMD Ryzen 5 1600X / Intel Core i5-7600K</li>
+            <li>Оперативная память: 8GB</li>
+            <li>Видеокарта: AMD Radeon RX 580 8GB / NVIDIA GeForce GTX 1060 6GB</li>
+            <li>Диск: SSD-накопитель на 150 ГБ</li>
+          </ul>
+        </div>
+        <div class="requirement-card">
+          <div class="card-title">Рекомендуемые требования</div>
+          <ul class="card-list">
+            <li>Версия ОС: Windows 10 / Windows 11</li>
+            <li>Процессор: AMD Ryzen 7 3700X / Intel Core i7-9700K</li>
+            <li>Оперативная память: 16GB</li>
+            <li>Видеокарта: AMD Radeon RX 5700 XT 8GB / NVIDIA GeForce RTX 2070 SUPER 8GB / GTX 1080 Ti 11GB</li>
+            <li>Диск: SSD-накопитель на 150 ГБ</li>
+          </ul>
+        </div>
+        <div class="localization-card">
+          <div class="card-title">Озвучка и субтитры</div>
+          <ul class="card-list">
+            <li>Английский</li>
+            <li>Русский</li>
+          </ul>
+          <div class="localization-subtitle">Только субтитры:</div>
+          <div class="subs-grid">
+            <ul>
+              <li>Немецкий</li>
+              <li>Французский</li>
+              <li>Испанский</li>
+              <li>Итальянский</li>
+            </ul>
+            <ul>
+              <li>Польский</li>
+              <li>Чешский</li>
+              <li>Турецкий</li>
+              <li>Сербский</li>
+            </ul>
+            <ul>
+              <li>Португальский</li>
+              <li>Упрощённый китайский</li>
+              <li>Корейский</li>
+              <li>Японский</li>
+              <li>Киргизский</li>
+              <li>Арабский</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="support-section">
+        <h3>Нас поддерживают</h3>
+        <div class="support-logos">
+            <a href="https://fasie.ru" target="_blank">
+                <img src="img/images.png" alt="ФАСИ" class="support-logo">
+            </a>
+        </div>
+    </div>
+
+    <footer>
+        <div class="social-media">
+            <p>Следите за нами:</p>
+            <a href="#">YouTube</a> | <a href="#">Facebook</a> | <a href="#">Twitter</a>
+        </div>
+    </footer>
+
+    <div id="description-modal" class="modal">
+        <div id="description-content" class="modal-content">
+            <span id="close-btn" onclick="hideDescription()">×</span>
+            <p id="hero-description"></p>
+        </div>
+    </div>
+
+    <!-- HERO BLOCK -->
+    <!-- СЕКЦИЯ ПРЕИМУЩЕСТВ -->
+</body>
+</html>
